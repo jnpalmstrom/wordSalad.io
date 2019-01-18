@@ -1,7 +1,9 @@
 # file: ~/.gitignore_global
 .DS_Store
-.idea
+
 .gitignore
 node_modules
+
 # IDEA config files
 .idea/
+.idea
