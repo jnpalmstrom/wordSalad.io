@@ -24,7 +24,7 @@ io.on('connection', function(socket){
 // Initialize connection to AWS RDS mySQL database
 let connection = mysql.createConnection({
     // Properties for the DB
-    host: 'wordsaladdb.cmrpubhiwsmb.us-east-1.rds.amazonaws.com',
+    host: 'postdb.cmrpubhiwsmb.us-east-1.rds.amazonaws.com',
     port: '3306',
     user: 'masterAdmin',
     password: 'Pa55word',
@@ -32,12 +32,18 @@ let connection = mysql.createConnection({
 });
 
 connection.connect(function (err) {
-    if(err) {
+    if (err) {
         console.log(err);
     }
     else {
         console.log("Database Connection Successful!")
     }
+});
+
+app.get('/', function (req, res) {
+    res.status(200);
+    res.sendFile(path.join(__dirname + './palavramix/build/index.html'),
+        (err) => res.status(500).send(err));
 });
 
 //Define express js routes

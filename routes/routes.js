@@ -11,7 +11,36 @@ module.exports = function (app) {
     });
 
     app.get('/archive', function (req, res) {
-        res.render('archive.html', {});
+        let allPosts = [];
+        let currPost = 0;
+
+        let hackathonDB = mysql.createConnection({
+            host: 'postDB.cmrpubhiwsmb.us-east-1.rds.amazonaws.com',
+            port: '3306',
+            user: 'masterAdmin',
+            password: 'Pa55word',
+            database: 'wordSaladDB'
+        });
+        // Execute the insert statement
+        hackathonDB.query('SELECT * FROM archivedPosts', (err, rows) => {
+            if (err) {
+                return console.error(err.message);
+            } else {
+
+                for (let i in rows) {
+                    allPosts[currPost++] = {
+                        idarchivedPosts: rows[i].idarchivedPosts,
+                        post: rows[i].post,
+                        numLikes: rows[i].numLikes,
+                        numDislikes: rows[i].numDislikes,
+                        timeStamp: rows[i].timeStamp,
+                    };
+                }
+
+                res.render('archive.html', {});
+            }
+        });
+        hackathonDB.end();
     });
 
 /*

@@ -7,3 +7,7 @@ node_modules
 # IDEA config files
 .idea/
 .idea
+
+# React
+palavramix/node_modules
+palavramix/build
