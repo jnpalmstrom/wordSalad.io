@@ -7,6 +7,7 @@ module.exports = function (app) {
     });
 
     app.get('/archive', function (req, res) {
+
         let allPosts = [];
         let currPost = 0;
 
@@ -17,6 +18,7 @@ module.exports = function (app) {
             password: 'Pa55word',
             database: 'wordSaladDB'
         });
+
         // Execute the insert statement
         hackathonDB.query('SELECT * FROM archivedPosts', (err, rows) => {
             if (err) {
