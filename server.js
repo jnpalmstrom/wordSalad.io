@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
+const path = require('path');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -11,6 +12,8 @@ const io = require('socket.io')(http);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
+app.use(express.static(path.join(__dirname, './client/build')));
+
 
 // Sets relative path for Express to serve files out of views folder
 app.use(express.static(__dirname + '/public'));
@@ -40,10 +43,8 @@ connection.connect(function (err) {
     }
 });
 
-app.get('/', function (req, res) {
-    res.status(200);
-    res.sendFile(path.join(__dirname + './palavramix/build/index.html'),
-        (err) => res.status(500).send(err));
+app.get('/', function(req, res) {
+    res.sendFile(path.join(__dirname + '/palavramix/build/index.html'));
 });
 
 //Define express js routes
