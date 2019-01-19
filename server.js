@@ -12,7 +12,7 @@ const io = require('socket.io')(http);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
-app.use(express.static(path.join(__dirname, './client/build')));
+app.use(express.static(path.join(__dirname, './palavramix/build')));
 
 
 // Sets relative path for Express to serve files out of views folder
