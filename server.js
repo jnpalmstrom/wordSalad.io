@@ -10,6 +10,10 @@ const port = process.env.PORT || 3000;
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
+import { CollegiateDictionary, LearnersDictionary } from 'mw-dict'
+const MW_API_KEY = 'f79df243-30e7-417b-9072-5161ebc7e154';
+const dict = new CollegiateDictionary(MW_API_KEY);
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.static(path.join(__dirname, '/palavramix/build')));
@@ -22,7 +26,7 @@ app.use(express.static(__dirname + '/views'));
 let keyList = [];
 let allPosts = [];
 let currColor = 1;
-
+let allWords = [];
 
 // Initialize connection to AWS RDS mySQL database
 let connection = mysql.createConnection({
@@ -46,28 +50,50 @@ connection.connect(function (err) {
 // Listen for connections and log to console
 io.on('connection', function (socket) {
 
-    // Generate a unique for the connected user
-    let uniqueKey = Math.random();
-    keyList.push(uniqueKey);
+    // Add the socket to the list of currently connected sockets
+    keyList.push(socket);
 
-    socket.emit('key', uniqueKey);
+    socket.emit('key', socket);
     socket.emit('current-color', currColor);
+    socket.emit('all-words', allWords);
+    allPosts.forEach((aPost) => {
+        socket.emit('a-post', aPost);
+    });
 
     // Handles when a user makes a new post
-    socket.on('Post', function (data) {
-        console.log(data);
+    socket.on('post', function (data) {
+        allPosts.push(data);
+
+        // Goes thru all current connected sockets
+        keyList.forEach((aKey) => {
+            const currSocket = keyList[aKey];
+
+            // Sends new lists of posts
+            allPosts.forEach((aPost) => {
+                currSocket.emit('a-post', aPost);
+            });
+        });
     });
 
     // Handle disconnection
     socket.on('disconnect', () => {
-        delete keyList[]
-    })
-
+        delete keyList[socket]
+    });
 
 });
 
+// Loop thru all connected sockets and notify that Posts will be deleted soon
+function warnUsers() {
+    keyList.forEach((aKey) => {
+        const currSocket = keyList[aKey];
+        currSocket.emit('warning');
+    });
+}
 
 function clearPosts() {
+    // Set warning timeOut Interval
+    setTimeout(warnUsers, 90000);
+
     // Update the archivePost DB with highest rated post
     let hackathonDB = mysql.createConnection({
         host: 'postDB.cmrpubhiwsmb.us-east-1.rds.amazonaws.com',
@@ -77,17 +103,16 @@ function clearPosts() {
         database: 'wordSaladDB'
     });
 
-    // Prepared statement to insert into archivedPosts table
-    let addRequestStmt = 'INSERT INTO archivedPosts(post, numLikes, numDislikes, timeStamp) VALUES (?, ?, ?, ?)';
-
     // Find the top post
     let mostLikes = 0;
     let topPostIndex = 0;
     allPosts.forEach((aPost) => {
-        if (aPost.numLikes > mostLikes) {
-            topPostIndex = allPosts[aPost];
-        }
+        let score = aPost.numLikes - aPost.numDislikes;
+        if (score > mostLikes) { topPostIndex = allPosts[aPost]; }
     });
+
+    // Prepared statement to insert into archivedPosts table
+    let addRequestStmt = 'INSERT INTO archivedPosts(post, numLikes, numDislikes, timeStamp) VALUES (?, ?, ?, ?)';
 
     let topPost = [allPosts[topPostIndex].post, allPosts[topPostIndex].numLikes, allPosts[topPostIndex].numDislikes, allPosts[topPostIndex].timeStamp];
 
@@ -98,7 +123,7 @@ function clearPosts() {
     hackathonDB.end();
 
     // Clears all posts
-    allPosts.length = 0;
+    allPosts = [];
 
     // Generate a new color for the current time period
     currColor = Math.floor(Math.random() * 359);
@@ -111,9 +136,9 @@ function clearPosts() {
     });
 }
 // Clear all posts after 2 minutes
-setTimeout(clearPosts, 120000);
+setInterval(clearPosts, 120000);
 
-
+// Sends initial index page
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/palavramix/build/index.html'));
 });
