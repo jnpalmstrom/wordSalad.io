@@ -4,7 +4,7 @@ import {
     convertIntToHexColor
 } from "./utils/Color";
 
-import openSocket from 'socket.io-client';
+import io from 'socket.io-client';
 
 // todo: refactor all custom components to separate file for clarity
 
@@ -19,14 +19,16 @@ class App extends Component {
         super(props);
         this.state = {
             phrases: [], // collection of phrase objects
-            words: ["test1", "test2", "test3", "looooong ass word"],   // collection of strings
+            words: [],   // collection of strings
             userInputPhrase: [],  // collection of strings
             userInputPhraseString: '', // string made up of above collection
-            color: 0   // color passed in by server
+            color: 0,   // color passed in by server
+            socket: ''
         };
 
         this.onWordClick = this.onWordClick.bind(this);
         this.onBackspace = this.onBackspace.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
     }
 
     /**
@@ -53,11 +55,32 @@ class App extends Component {
         ))
     }
 
+    onSubmit(phrase) {
+        this.state.socket.emit('post', { ...phrase })
+    }
+
     componentDidMount() {
         // create connection
-        const socket = openSocket('http://localhost:3000');
+        const socket = io.connect('http://localhost:3000');
+        this.setState({socket: socket});
 
-        // bind event listeners
+        socket.on('current-color', function(currColor) {
+            this.setState({ color: currColor });
+        });
+
+        socket.on('all-words', function(wordArray) {
+           this.setState({ words: [...wordArray] });
+        });
+
+        socket.on('a-post', function(post) {
+            this.setState((oldState, props) => ({phrases: [...oldState.phrases, post]}));
+        });
+
+        socket.on('all-posts-cleared', function() {
+            this.setState({phrases: []});
+        })
+
+        // todo: deal with 'warning' event
     }
 
     /*  User Input div will organize this vertically into:
@@ -76,7 +99,7 @@ class App extends Component {
                     <h1>palavramix</h1>
                 </div>
 
-                <CollectionOfPhrases/>
+                <CollectionOfPhrases phrases={this.state.phrases}/>
 
                 <div className="user-input">
                     <div className="user-input-container">
@@ -88,7 +111,9 @@ class App extends Component {
                             />
                         </div>
 
-                        <button className="submit-button">submit!</button>
+                        <button className="submit-button" onClick={(e) => (this.onSubmit({
+                            phrase: this.state.userInputPhraseString,
+                            timestamp: new Date() })) }>submit!</button>
 
                         <div className="word-box-container">
                             {this.state.words.map((val, index) => (
@@ -114,21 +139,16 @@ class App extends Component {
  * @param props
  */
 const CollectionOfPhrases = (props) => {
-    let a = [];
-    for (let i = 0; i < 60; i++)
-    {
-        a.push(
-            <PhraseBox
-                phrase={"This is a phrase"}
-                timestamp={new Date(Date.UTC(2019, 11, 20, 3, 0, 0))}
-                color={40}
-            />
-        );
-    }
-
     return (
         <div className="collection-of-phrases">
-            {a}
+            {props.phrases.map((item, index) => (
+                <PhraseBox
+                    key={item.timestamp.toString() + index}
+                    phrase={item.phrase}
+                    timestamp={item.timestamp}
+                    color={item.color}
+                />
+                ))}
         </div>
     );
 };
