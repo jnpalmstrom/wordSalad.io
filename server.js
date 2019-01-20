@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
 const path = require('path');
+const rword = require('rword');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -10,7 +11,8 @@ const port = process.env.PORT || 3000;
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
-import { CollegiateDictionary, LearnersDictionary } from 'mw-dict'
+const CollegiateDictionary = require("mw-dict").CollegiateDictionary;
+
 const MW_API_KEY = 'f79df243-30e7-417b-9072-5161ebc7e154';
 const dict = new CollegiateDictionary(MW_API_KEY);
 
@@ -26,7 +28,11 @@ app.use(express.static(__dirname + '/views'));
 let keyList = [];
 let allPosts = [];
 let currColor = 1;
+// Clear all words
 let allWords = [];
+allWords = rword.rword.generate(8);
+allWords.push('The');
+allWords.push('A/An');
 
 // Initialize connection to AWS RDS mySQL database
 let connection = mysql.createConnection({
@@ -82,6 +88,29 @@ io.on('connection', function (socket) {
 
 });
 
+const allFunctionalLabels = ['adjective', 'noun', 'adverb', 'preposition', 'conjunction',
+    'pronoun', 'interjection', 'verb'];
+
+// Randomly chooses 5 functional labels
+function labelPicker() {
+    let newSetOfLabels = ['adjective', 'noun', 'verb'];
+
+    for (let i=0; i < 6; i++) {
+        let randIndex = Math.floor(Math.random() * 8);
+        newSetOfLabels.push(allFunctionalLabels[randIndex]);
+    }
+    return newSetOfLabels;
+}
+
+//
+function generateWords(setOfLabels) {
+
+    setOfLabels.forEach((aLabel) => {
+        let randomWord = rword.generate();
+    });
+
+}
+
 // Loop thru all connected sockets and notify that Posts will be deleted soon
 function warnUsers() {
     keyList.forEach((aKey) => {
@@ -122,8 +151,14 @@ function clearPosts() {
     });
     hackathonDB.end();
 
-    // Clears all posts
+    // Clear all posts
     allPosts = [];
+
+    // Clear all words
+    allWords = [];
+    allWords = rword.rword.generate(8);
+    allWords.push('The');
+    allWords.push('A/An');
 
     // Generate a new color for the current time period
     currColor = Math.floor(Math.random() * 359);
@@ -135,6 +170,7 @@ function clearPosts() {
         currSocket.emit('current-color', currColor);
     });
 }
+
 // Clear all posts after 2 minutes
 setInterval(clearPosts, 120000);
 
@@ -149,4 +185,5 @@ require('./routes/routes.js')(app);
 // Listen for the server to start
 app.listen(port, function () {
     console.log("App is running on PORT: " + port);
+    dict.lookup('').then(result => {console.log(result)})
 });
