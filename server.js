@@ -7,10 +7,6 @@ const rword = require('rword');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// For Socket.io
-const http = require('http').createServer(app);
-const io = require('socket.io')(http);
-
 const CollegiateDictionary = require("mw-dict").CollegiateDictionary;
 
 const MW_API_KEY = 'f79df243-30e7-417b-9072-5161ebc7e154';
@@ -23,6 +19,16 @@ app.use(express.static(path.join(__dirname, '/palavramix/build')));
 // Sets relative path for Express to serve files out of views folder
 //app.use(express.static(__dirname + '/public'));
 //app.use(express.static(__dirname + '/views'));
+
+// For Socket.io
+const server = require('http').createServer(app);
+
+// Listen for the server to start
+server.listen(port, function () {
+    console.log("App is running on PORT: " + port);
+});
+
+const io = require('socket.io').listen(server);
 
 let keyList = [];
 let allPosts = [];
@@ -211,8 +217,3 @@ app.get('/', function(req, res) {
 
 //Define express js routes
 require('./routes/routes.js')(app);
-
-// Listen for the server to start
-app.listen(port, function () {
-    console.log("App is running on PORT: " + port);
-});
