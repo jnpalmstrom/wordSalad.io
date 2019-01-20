@@ -141,10 +141,7 @@ function generateWords(setOfLabels) {
 
 // Loop thru all connected sockets and notify that Posts will be deleted soon
 function warnUsers() {
-    keyList.forEach((aKey) => {
-        const currSocket = keyList[aKey];
-        currSocket.emit('warning');
-    });
+    io.emit('warning');
 }
 
 function clearPosts() {
