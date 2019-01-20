@@ -687,14 +687,17 @@ function warnUsers() {
     io.emit('warning');
 }
 
+function clearAllPosts() {
+    allPosts = [];
+    io.emit('all-posts-cleared');
+}
+
 function clearPosts() {
     // Set warning timeOut Interval
     setTimeout(warnUsers, 90000);
 /*
 
 */
-    // Clear all posts
-    allPosts = [];
 
     // Clear all words
     allWords = [];
@@ -706,13 +709,14 @@ function clearPosts() {
     // Generate a new color for the current time period
     currColor = Math.floor(Math.random() * 359);
 
-    //io.emit('all-posts-cleared');
+
     io.emit('all-words', allWords);
     io.emit('current-color', currColor);
 }
 
 // Clear all posts after 2 minutes
 setInterval(clearPosts, 90000);
+setInterval(clearAllPosts, 86400000);
 
 function shuffle(a) {
     let j, x, i;
