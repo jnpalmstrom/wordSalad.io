@@ -19,7 +19,7 @@ class App extends Component {
         super(props);
         this.state = {
             phrases: [], // collection of phrase objects
-            words: ["test1", "test2", "test3", "looooong ass word"],   // collection of strings
+            words: [],   // collection of strings
             userInputPhrase: [],  // collection of strings
             userInputPhraseString: '', // string made up of above collection
             color: 0   // color passed in by server
@@ -76,7 +76,7 @@ class App extends Component {
                     <h1>palavramix</h1>
                 </div>
 
-                <CollectionOfPhrases/>
+                <CollectionOfPhrases phrases={this.state.phrases}/>
 
                 <div className="user-input">
                     <div className="user-input-container">
@@ -114,21 +114,16 @@ class App extends Component {
  * @param props
  */
 const CollectionOfPhrases = (props) => {
-    let a = [];
-    for (let i = 0; i < 60; i++)
-    {
-        a.push(
-            <PhraseBox
-                phrase={"This is a phrase"}
-                timestamp={new Date(Date.UTC(2019, 11, 20, 3, 0, 0))}
-                color={40}
-            />
-        );
-    }
-
     return (
         <div className="collection-of-phrases">
-            {a}
+            {props.phrases.map((item, index) => (
+                <PhraseBox
+                    key={item.timestamp.toString() + index}
+                    phrase={item.phrase}
+                    timestamp={item.timestamp}
+                    color={item.color}
+                />
+                ))}
         </div>
     );
 };
