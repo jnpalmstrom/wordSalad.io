@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import {
-    convertIntToHexColor
+    convertIntToHSL
 } from "./utils/Color";
 
 import io from 'socket.io-client';
@@ -43,6 +43,7 @@ class App extends Component {
         ))
     }
 
+
     onBackspace() {
         let updated = [...this.state.userInputPhrase];
         updated.pop();
@@ -61,7 +62,8 @@ class App extends Component {
 
         this.state.socket.emit('post', {
             phrase: input.phrase,
-            timestamp: dateString
+            timestamp: dateString,
+            color: input.color
         });
         this.setState({
             userInputPhrase: [],
@@ -90,7 +92,7 @@ class App extends Component {
             this.setState({phrases: []});
         });
 
-        // todo: deal with 'warning' event
+        // todo: deal with 'warning' event --> maybe not
     }
 
     /*  User Input div will organize this vertically into:
@@ -117,13 +119,17 @@ class App extends Component {
                             <PhraseBox
                                 phrase={this.state.userInputPhraseString}
                                 timestamp={new Date()}
-                                color={this.state.color}
+                                color={convertIntToHSL(this.state.color, this.state.userInputPhraseString.length)}
                             />
                         </div>
 
                         <button className="submit-button" onClick={(e) => (this.onSubmit({
                             phrase: this.state.userInputPhraseString,
-                            timestamp: new Date() })) }>submit!</button>
+                            timestamp: new Date(),
+                            color: convertIntToHSL(this.state.color, this.state.userInputPhraseString.length)
+                        })) }>
+                            submit!
+                        </button>
 
                         <div className="word-box-container">
                             {this.state.words.map((val, index) => (
@@ -154,9 +160,10 @@ const CollectionOfPhrases = (props) => {
             {props.phrases.map((item, index) => (
                 <PhraseBox
                     key={item.timestamp.toString() + index}
+                    id={item.id}
                     phrase={item.phrase}
                     timestamp={item.timestamp}
-                    color={item.color}
+                    color={convertIntToHSL(props.color, props.phrase.length)}
                 />
                 ))}
         </div>
@@ -173,7 +180,7 @@ const PhraseBox = (props) => {
     const options = { year: 'numeric', month: 'numeric', day: 'numeric'};
     const dateString = props.timestamp.toLocaleString('en-US', options);
     const boxStyle = {
-        backgroundColor: convertIntToHexColor(props.color)
+        backgroundColor: props.color
     };
 
     return (
@@ -184,10 +191,6 @@ const PhraseBox = (props) => {
             </div>
 
             <div className="bottom-container">
-                <div className="vote-buttons">
-                    <button className="vote-btn">+</button>
-                    <button className="vote-btn">-</button>
-                </div>
                 <h2 className="timestamp">{dateString}</h2>
             </div>
 
