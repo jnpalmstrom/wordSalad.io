@@ -20,19 +20,20 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.static(path.join(__dirname, '/palavramix/build')));
 
-
 // Sets relative path for Express to serve files out of views folder
-app.use(express.static(__dirname + '/public'));
-app.use(express.static(__dirname + '/views'));
+//app.use(express.static(__dirname + '/public'));
+//app.use(express.static(__dirname + '/views'));
 
 let keyList = [];
 let allPosts = [];
 let currColor = 1;
-// Clear all words
+
 let allWords = [];
 allWords = rword.rword.generate(8);
 allWords.push('The');
 allWords.push('A/An');
+
+let postID = 0;
 
 // Initialize connection to AWS RDS mySQL database
 let connection = mysql.createConnection({
@@ -59,16 +60,28 @@ io.on('connection', function (socket) {
     // Add the socket to the list of currently connected sockets
     keyList.push(socket);
 
-    socket.emit('key', socket);
+    //socket.emit('key', socket);
     socket.emit('current-color', currColor);
     socket.emit('all-words', allWords);
     allPosts.forEach((aPost) => {
-        socket.emit('a-post', aPost);
+        socket.emit('a-post', {
+            id: aPost.id,
+            phrase: aPost.phrase,
+            timestamp: aPost.timestamp
+        });
     });
 
     // Handles when a user makes a new post
     socket.on('post', function (data) {
-        allPosts.push(data);
+
+        let newPost = {
+            id: socket,
+            phrase: data.phrase,
+            numLikes: 0,
+            numDislikes: 0,
+            timestamp: data.timestamp
+        };
+        allPosts.push(newPost);
 
         // Goes thru all current connected sockets
         keyList.forEach((aKey) => {
@@ -76,7 +89,11 @@ io.on('connection', function (socket) {
 
             // Sends new lists of posts
             allPosts.forEach((aPost) => {
-                currSocket.emit('a-post', aPost);
+                currSocket.emit('a-post', {
+                    id: aPost.id,
+                    phrase: aPost.phrase,
+                    timestamp: aPost.timestamp
+                });
             });
         });
     });
@@ -159,6 +176,7 @@ function clearPosts() {
     allWords = rword.rword.generate(8);
     allWords.push('The');
     allWords.push('A/An');
+    shuffle(allWords);
 
     // Generate a new color for the current time period
     currColor = Math.floor(Math.random() * 359);
@@ -166,13 +184,24 @@ function clearPosts() {
     // Loop thru all connected sockets and notify that Posts have been cleared & send them the new color
     keyList.forEach((aKey) => {
         const currSocket = keyList[aKey];
-        currSocket.emit('allPosts-cleared');
+        currSocket.emit('all-posts-cleared');
         currSocket.emit('current-color', currColor);
     });
 }
 
 // Clear all posts after 2 minutes
 setInterval(clearPosts, 120000);
+
+function shuffle(a) {
+    let j, x, i;
+    for (i = a.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        x = a[i];
+        a[i] = a[j];
+        a[j] = x;
+    }
+    return a;
+}
 
 // Sends initial index page
 app.get('/', function(req, res) {
