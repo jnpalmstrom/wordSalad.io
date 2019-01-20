@@ -606,25 +606,31 @@ io.on('connection', function (socket) {
             timestamp: data.timestamp,
             color: data.color
         };
+
+        // Update the archivePost DB with highest rated post
+        let hackathonDB = mysql.createConnection({
+            host: 'postDB.cmrpubhiwsmb.us-east-1.rds.amazonaws.com',
+            port: '3306',
+            user: 'masterAdmin',
+            password: 'Pa55word',
+            database: 'wordSaladDB'
+        });
+
+        // Prepared statement to insert into archivedPosts table
+        let addRequestStmt = 'INSERT INTO archivedPosts(post, color, timeStamp) VALUES (?, ?, ?)';
+
+        let topPost = [newPost.phrase, newPost.color, newPost.timestamp];
+
+        // Execute the insert statement
+        hackathonDB.query(addRequestStmt, topPost, (err, results, fields) => {
+            if (err) { return console.error(err.message); }
+        });
+        hackathonDB.end();
+
         allPosts.push(newPost);
 
         io.emit('a-post', newPost);
 
-        /*
-        // Goes thru all current connected sockets
-        keyList.forEach((aKey) => {
-            const currSocket = keyList[aKey];
-
-            // Sends new lists of posts
-            allPosts.forEach((aPost) => {
-                currSocket.emit('a-post', {
-                    id: aPost.id,
-                    phrase: aPost.phrase,
-                    timestamp: aPost.timestamp
-                });
-            });
-        });
-        */
     });
 
     // Handle disconnection
@@ -673,7 +679,6 @@ function generateWords() {
     newWords.push(rand6);
     newWords.push(rand7);
     newWords.push(rand8);
-    console.log(rand1);
     return newWords;
 }
 
@@ -686,33 +691,7 @@ function clearPosts() {
     // Set warning timeOut Interval
     setTimeout(warnUsers, 90000);
 /*
-    // Update the archivePost DB with highest rated post
-    let hackathonDB = mysql.createConnection({
-        host: 'postDB.cmrpubhiwsmb.us-east-1.rds.amazonaws.com',
-        port: '3306',
-        user: 'masterAdmin',
-        password: 'Pa55word',
-        database: 'wordSaladDB'
-    });
 
-    // Find the top post
-    let mostLikes = 0;
-    let topPostIndex = 0;
-    allPosts.forEach((aPost) => {
-        let score = aPost.numLikes - aPost.numDislikes;
-        if (score > mostLikes) { topPostIndex = allPosts[aPost]; }
-    });
-
-    // Prepared statement to insert into archivedPosts table
-    let addRequestStmt = 'INSERT INTO archivedPosts(post, numLikes, numDislikes, timeStamp) VALUES (?, ?, ?, ?)';
-
-    let topPost = [allPosts[topPostIndex].post, allPosts[topPostIndex].numLikes, allPosts[topPostIndex].numDislikes, allPosts[topPostIndex].timeStamp];
-
-    // Execute the insert statement
-    hackathonDB.query(addRequestStmt, topPost, (err, results, fields) => {
-        if (err) { return console.error(err.message); }
-    });
-    hackathonDB.end();
 */
     // Clear all posts
     allPosts = [];
@@ -727,13 +706,13 @@ function clearPosts() {
     // Generate a new color for the current time period
     currColor = Math.floor(Math.random() * 359);
 
-    io.emit('all-posts-cleared');
+    //io.emit('all-posts-cleared');
     io.emit('all-words', allWords);
     io.emit('current-color', currColor);
 }
 
 // Clear all posts after 2 minutes
-setInterval(clearPosts, 12000);
+setInterval(clearPosts, 90000);
 
 function shuffle(a) {
     let j, x, i;
