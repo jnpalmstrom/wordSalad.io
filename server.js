@@ -535,6 +535,306 @@ request('https://api.datamuse.com/words?md=p&sp=z*', { json: true }, (err, res, 
     });
 });
 
+// Lists of good words
+const goodAdjectives = ['dead',
+    'hairless',
+    'sadistic',
+    'metal',
+    'wild',
+    'domesticated',
+    'abnormal',
+    'medicated',
+    'cocky',
+    'massive',
+    'disrespectful',
+    'impressive',
+    'hilarious',
+    'sexy',
+    'hot',
+    'very-tactful',
+    'bearded',
+    'duck-like',
+    'violent',
+    'slimy',
+    'insanely-creepy',
+    'embarrassed-to-the-bone',
+    'self-centered',
+    'talking',
+    'naked',
+    'angry',
+    'shaky',
+    'deep',
+    'sick',
+    'zippy',
+    'sticky',
+    'fluffy',
+    'frozen',
+    'unholy',
+    'painfully-honest',
+    'filthy',
+    'fighting',
+    'bonkers',
+    'harsh',
+    'frisky',
+    'greedy',
+    'crawly',
+    'insane',
+    'hideous',
+    'ungodly',
+    'abusive',
+    'drunken',
+    'hateful',
+    'idiotic',
+    'twisted',
+    'useless',
+    'yapping',
+    'magical',
+    'indecent',
+    'godawful',
+    'arrogant',
+    'confused',
+    'flirting',
+    'high-end',
+    'insecure',
+    'maniacal',
+    'sickened',
+    'slippery',
+    'stubborn',
+    'tripping',
+    'vengeful',
+    'sinister',
+    'costumed',
+    'cowardly',
+    'haunting',
+    'startled',
+    'alcoholic',
+    'demanding',
+    'shivering',
+    'offensive',
+    'nighttime',
+    'startling',
+    'disgusting',
+    'slap-happy',
+    'disturbing',
+    'adulterous',
+    'blathering',
+    'flickering',
+    'rebellious',
+    'impertinent',
+    'bull-headed',
+    'hyperactive',
+    'infuriating',
+    'outnumbered',
+    'pea-brained',
+    'territorial',
+    'underhanded',
+    'zombie-like',
+    'mischievous',
+    'at-the-ready',
+    'free-loading',
+    'house-broken',
+    'up-to-no-good',
+    'cruel-hearted',
+    'misunderstood',
+    'narrow-minded',
+    'self-absorbed',
+    'bat-shit-crazy',
+    'fiercely-loyal',
+    'out-of-control',
+    'fear-inspiring',
+    'bat-shit-crazy',
+    'mentally-impaired'];
+const goodVerbs = ['surround',
+    'stab',
+    'return',
+    'medicate',
+    'blindside',
+    'boogie',
+    'flap',
+    'trip',
+    'swat',
+    'suck-in',
+    'harass',
+    'trap',
+    'snoop',
+    'explode',
+    'sketch',
+    'scatter',
+    'challenge',
+    'fight',
+    'bury',
+    'splatter',
+    'smack',
+    'peddle',
+    'balance',
+    'trip-up',
+    'boggle',
+    'poke',
+    'critique',
+    'fear',
+    'initiate',
+    'line-up',
+    'run-over',
+    'schedule',
+    'cook',
+    'imprison',
+    'underestimate',
+    'cajole',
+    'wheedle',
+    'soft-soap',
+    'butter-up',
+    'sweet-talk',
+    'prevail',
+    'shred',
+    'drink',
+    'dispute',
+    'echo',
+    'mimic',
+    'berate',
+    'castigate',
+    'underrate',
+    'taunt'];
+const goodNouns = ['factory-reset-button',
+    'blood-rage',
+    'idiot',
+    'toaster',
+    'legend',
+    'death-wish',
+    'therapy',
+    'goal-in-life',
+    'marketing-idea',
+    'psychic',
+    'knife',
+    'sandwich',
+    'hunting-ground',
+    'lettuce',
+    'kitty',
+    'friendly-grandma',
+    'french-chef',
+    'antidepressant-drug',
+    'corn-cake',
+    'president-of-the-night',
+    'candlestick-maker',
+    'coffee-pot',
+    'brethren',
+    'national-security-agency',
+    'tank',
+    'useless-brakes',
+    'international-law-enforcement-agency',
+    'sound-barrier',
+    'skinny-woman',
+    'private-investor',
+    'main-people',
+    'stock-car',
+    'elastic-band',
+    'whole-blood',
+    'telephone',
+    'mad-cow-disease',
+    'scourge-upon-the-earth',
+    'rough-skinned-newt',
+    'karate',
+    'pistol',
+    'legal-warrant',
+    'people-who-are-hurt',
+    'idea-he-suggested',
+    'party-of-the-first-part',
+    'place-of-business',
+    'double-fault',
+    'kitty-cat',
+    'famous-landscape-painting',
+    'hairy-legs',
+    'old-irish-cottage',
+    'pocket-flask',
+    'liquid-oxygen',
+    'laser-beams',
+    'preventive-strike',
+    'dingle-berry',
+    'reading-party',
+    'generalized-bond',
+    'indirect-expression',
+    'messiness',
+    'love-of-her-life',
+    'trust-fund',
+    'volcanic-crater',
+    'travel-guidebook',
+    'electric-furnace',
+    'internal-respiration',
+    'police-squad',
+    'mad-dog-skullcap',
+    'sneaky-criminal',
+    'new-version',
+    'keepsake-machete',
+    'gaming-laptop',
+    'hissy-fit',
+    'dog-poop',
+    'dragon',
+    'mediation',
+    'patrolman',
+    'pervert',
+    'toilet-seat',
+    'haunted-graveyard',
+    'really-tough-guy',
+    'twinkling-uncleanness',
+    'wrinkle',
+    'personal-credit-line',
+    'multi-billionaire',
+    'mental-disorder',
+    'sweet-tailpipe',
+    'boiling-water',
+    'deer-antler',
+    'background-story',
+    'striped-hyena',
+    'weed-whacker',
+    'backstabbing-misfortune',
+    'bad-striped-hyena',
+    'bat-shit-crazy-Amish-folk',
+    'beautiful-elastic-band',
+    'best-failure',
+    'big-bellied-bad-mood',
+    'bitchy-peace-offering',
+    'bloody-indignation',
+    'bone-chilling-legal-warrant',
+    'boring-heartbreak',
+    'bottle-conditioned-trainer',
+    'bottled-sweet-tailpipe',
+    'brainless-ways-of-the-world',
+    'brewery-fresh-sleazeball',
+    'bright-eyed-double-fault',
+    'brokenhearted-druggie',
+    'bull-headed-lover',
+    'busty-descending-color',
+    'buxom-personality',
+    'cask-conditioned-freak',
+    'cat-friendly-reading-party',
+    'caught-in-the-act-jackass',
+    'chauvinistic-pup',
+    'cheap-natural-history',
+    'cheeky-keepsake-machete',
+    'cheerful-toilet-seat',
+    'chilled-good-for-nothing',
+    'chunky-drug-addict',
+    'cocky-matrimonial-law',
+    'cold-hearted-Eskimo',
+    'colored-snuggle-bug',
+    'colossal-love-of-her-life',
+    'comforting-grouch',
+    'comic-divergent-thinking',
+    'common-toilet-seat',
+    'compassionate-bad-mood',
+    'complex-guilt',
+    'confrontational-freak',
+    'considerate-louse',
+    'contemporary-queen',
+    'content-dirtbag',
+    'control-top-light-bulb',
+    'corrupt-broken-promises',
+    'craft-brewed-police-squad',
+    'crappy-lack-of-morality',
+    'crate-trained-mood',
+    'crawly-mistake',
+    'crazed-master',];
+const personalPronouns = ['he', 'she', 'they', 'them', 'I', 'his', 'her', 'my', 'their'];
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.static(path.join(__dirname, '/palavramix/build')));
@@ -557,6 +857,7 @@ let allWords = [];
 allWords = generateWords();
 allWords.push('the');
 allWords.push('a/an');
+allWords.push('will');
 
 let postID = 0;
 
@@ -640,45 +941,39 @@ io.on('connection', function (socket) {
 
 });
 
-// Randomly chooses 5 functional labels
-function labelPicker() {
-    let newSetOfLabels = ['adjective', 'noun', 'verb'];
-
-    for (let i=0; i < 6; i++) {
-        let randIndex = Math.floor(Math.random() * 8);
-        newSetOfLabels.push(allFunctionalLabels[randIndex]);
-    }
-    return newSetOfLabels;
-}
-
 // Generate 8 random words
 function generateWords() {
     let newWords = [];
 
-    // 3 Nouns, 2 Verbs, 3 Adj
-    if (nounList.length > 1) {
-        var rand1 = nounList[Math.floor(Math.random() * nounList.length)].word;
-        var rand2 = nounList[Math.floor(Math.random() * nounList.length)].word;
-        var rand3 = nounList[Math.floor(Math.random() * nounList.length)].word;
-    }
-    if (verbList.length > 1) {
-        var rand4 = verbList[Math.floor(Math.random() * verbList.length)].word;
-        var rand5 = verbList[Math.floor(Math.random() * verbList.length)].word;
-    }
-    if (adjList.length > 1) {
-        var rand6 = adjList[Math.floor(Math.random() * adjList.length)].word;
-        var rand7 = adjList[Math.floor(Math.random() * adjList.length)].word;
-        var rand8 = adjList[Math.floor(Math.random() * adjList.length)].word;
-    }
-
+    if (nounList.length > 1) { var rand1 = nounList[Math.floor(Math.random() * nounList.length)].word;}
+    if (verbList.length > 1) { var rand2 = verbList[Math.floor(Math.random() * verbList.length)].word;}
+    if (adjList.length > 1) { var rand3 = adjList[Math.floor(Math.random() * adjList.length)].word;}
     newWords.push(rand1);
     newWords.push(rand2);
     newWords.push(rand3);
+
+    var rand4 = personalPronouns[Math.floor(Math.random() * personalPronouns.length)];
     newWords.push(rand4);
+    var rand5 = personalPronouns[Math.floor(Math.random() * personalPronouns.length)];
     newWords.push(rand5);
+
+    var rand6 = goodAdjectives[Math.floor(Math.random() * goodAdjectives.length)];
     newWords.push(rand6);
+    var rand7 = goodAdjectives[Math.floor(Math.random() * goodAdjectives.length)];
     newWords.push(rand7);
+    var rand8 = goodAdjectives[Math.floor(Math.random() * goodAdjectives.length)];
     newWords.push(rand8);
+
+    var rand9 = goodNouns[Math.floor(Math.random() * goodNouns.length)];
+    newWords.push(rand9);
+    var rand10 = goodNouns[Math.floor(Math.random() * goodNouns.length)];
+    newWords.push(rand10);
+
+    var rand12 = goodVerbs[Math.floor(Math.random() * goodVerbs.length)];
+    newWords.push(rand12);
+    var rand13 = goodVerbs[Math.floor(Math.random() * goodVerbs.length)];
+    newWords.push(rand13);
+
     return newWords;
 }
 
@@ -687,32 +982,33 @@ function warnUsers() {
     io.emit('warning');
 }
 
+function clearAllPosts() {
+    allPosts = [];
+    io.emit('all-posts-cleared');
+}
+
 function clearPosts() {
     // Set warning timeOut Interval
     setTimeout(warnUsers, 90000);
-/*
-
-*/
-    // Clear all posts
-    allPosts = [];
 
     // Clear all words
     allWords = [];
     allWords = generateWords();
     allWords.push('the');
     allWords.push('a');
+    allWords.push('will');
     shuffle(allWords);
 
     // Generate a new color for the current time period
     currColor = Math.floor(Math.random() * 359);
 
-    //io.emit('all-posts-cleared');
     io.emit('all-words', allWords);
     io.emit('current-color', currColor);
 }
 
 // Clear all posts after 2 minutes
 setInterval(clearPosts, 90000);
+setInterval(clearAllPosts, 86400000);
 
 function shuffle(a) {
     let j, x, i;
