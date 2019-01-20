@@ -1008,7 +1008,7 @@ function clearPosts() {
 
 // Clear all posts after 2 minutes
 setInterval(clearPosts, 90000);
-setInterval(clearAllPosts, 86400000);
+setInterval(clearAllPosts, 259200000);
 
 function shuffle(a) {
     let j, x, i;
