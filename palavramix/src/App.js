@@ -167,7 +167,7 @@ const CollectionOfPhrases = (props) => {
                     id={item.id}
                     phrase={item.phrase}
                     timestamp={item.timestamp}
-                    color={convertIntToHSL(props.color, props.phrase.length)}
+                    color={convertIntToHSL(props.color, item.phrase.length)}
                 />
                 ))}
         </div>
