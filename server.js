@@ -592,7 +592,8 @@ io.on('connection', function (socket) {
         socket.emit('a-post', {
             id: aPost.id,
             phrase: aPost.phrase,
-            timestamp: aPost.timestamp
+            timestamp: aPost.timestamp,
+            color: aPost.color
         });
     });
 
@@ -602,9 +603,8 @@ io.on('connection', function (socket) {
         let newPost = {
             postID: Math.random(),
             phrase: data.phrase,
-            numLikes: 0,
-            numDislikes: 0,
-            timestamp: data.timestamp
+            timestamp: data.timestamp,
+            color: data.color
         };
         allPosts.push(newPost);
 
@@ -650,14 +650,20 @@ function generateWords() {
     let newWords = [];
 
     // 3 Nouns, 2 Verbs, 3 Adj
-    var rand1 = nounList[Math.floor(Math.random() * nounList.length)];
-    var rand2 = nounList[Math.floor(Math.random() * nounList.length)];
-    var rand3 = nounList[Math.floor(Math.random() * nounList.length)];
-    var rand4 = verbList[Math.floor(Math.random() * verbList.length)];
-    var rand5 = verbList[Math.floor(Math.random() * verbList.length)];
-    var rand6 = adjList[Math.floor(Math.random() * adjList.length)];
-    var rand7 = adjList[Math.floor(Math.random() * adjList.length)];
-    var rand8 = adjList[Math.floor(Math.random() * adjList.length)];
+    if (nounList.length > 1) {
+        var rand1 = nounList[Math.floor(Math.random() * nounList.length)].word;
+        var rand2 = nounList[Math.floor(Math.random() * nounList.length)].word;
+        var rand3 = nounList[Math.floor(Math.random() * nounList.length)].word;
+    }
+    if (verbList.length > 1) {
+        var rand4 = verbList[Math.floor(Math.random() * verbList.length)].word;
+        var rand5 = verbList[Math.floor(Math.random() * verbList.length)].word;
+    }
+    if (adjList.length > 1) {
+        var rand6 = adjList[Math.floor(Math.random() * adjList.length)].word;
+        var rand7 = adjList[Math.floor(Math.random() * adjList.length)].word;
+        var rand8 = adjList[Math.floor(Math.random() * adjList.length)].word;
+    }
 
     newWords.push(rand1);
     newWords.push(rand2);
@@ -667,6 +673,7 @@ function generateWords() {
     newWords.push(rand6);
     newWords.push(rand7);
     newWords.push(rand8);
+    console.log(rand1);
     return newWords;
 }
 
@@ -713,19 +720,20 @@ function clearPosts() {
     // Clear all words
     allWords = [];
     allWords = generateWords();
-    allWords.push('The');
-    allWords.push('A/An');
+    allWords.push('the');
+    allWords.push('a');
     shuffle(allWords);
 
     // Generate a new color for the current time period
     currColor = Math.floor(Math.random() * 359);
 
     io.emit('all-posts-cleared');
+    io.emit('all-words', allWords);
     io.emit('current-color', currColor);
 }
 
 // Clear all posts after 2 minutes
-setInterval(clearPosts, 120000);
+setInterval(clearPosts, 12000);
 
 function shuffle(a) {
     let j, x, i;
