@@ -61,24 +61,24 @@ class App extends Component {
 
     componentDidMount() {
         // create connection
-        const socket = io.connect('http://localhost');
+        const socket = io();
         this.setState({socket: socket});
 
-        socket.on('current-color', function(currColor) {
+        socket.on('current-color', (currColor) => {
             this.setState({ color: currColor });
         });
 
-        socket.on('all-words', function(wordArray) {
+        socket.on('all-words', (wordArray) => {
            this.setState({ words: [...wordArray] });
         });
 
-        socket.on('a-post', function(post) {
+        socket.on('a-post', (post) => {
             this.setState((oldState, props) => ({phrases: [...oldState.phrases, post]}));
         });
 
-        socket.on('all-posts-cleared', function() {
+        socket.on('all-posts-cleared', () => {
             this.setState({phrases: []});
-        })
+        });
 
         // todo: deal with 'warning' event
     }
