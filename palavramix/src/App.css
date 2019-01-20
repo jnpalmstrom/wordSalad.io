@@ -5,14 +5,13 @@ button:hover {
 
 .timer {
   position: fixed;
-  -webkit-border-radius: 15px;
-  -moz-border-radius: 15px;
   border-radius: 15px;
   margin: 3em;
-  top: 5%;
+  top: -5%;
   left: 5%;
-  border: solid rgba(255, 0, 0, 0.29) 2px;
+  border: 2px solid rgba(255,0,0,.29);
   padding: 1em;
+  background-color: white;
 }
 
 /* PHRASE BOX STYLE */

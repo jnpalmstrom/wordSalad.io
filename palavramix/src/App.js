@@ -47,6 +47,8 @@ class App extends Component {
                 }
             ))
         }
+        else
+            this.setState({errorMsg: "(word limit reached!)"})
     }
 
 
@@ -77,7 +79,12 @@ class App extends Component {
                 this.setState({
                 userInputPhrase: [],
                 userInputPhraseString: ''
-            });}
+            });
+
+            this.setState({errorMsg: ""})
+        }
+        else
+            this.setState({errorMsg: "(Too short!)"})
     }
 
     componentDidMount() {
@@ -123,13 +130,7 @@ class App extends Component {
             <div className="App">
 
                 <div className="header-logo">
-                    <h1>palavramix</h1>
-                </div>
-
-                <div className="timer">
-                    <p>Words will change in...</p>
-                    <h2>{this.state.timeLeft}</h2>
-                    <p>{this.state.errorMsg}</p>
+                    <h1>{this.state.timeLeft} seconds till palavramix</h1>
                 </div>
 
                 <CollectionOfPhrases phrases={this.state.phrases}/>
@@ -149,7 +150,7 @@ class App extends Component {
                             timestamp: new Date(),
                             color: colorValue
                         })) }>
-                            submit!
+                            submit! {this.state.errorMsg}
                         </button>
 
                         <div className="word-box-container">
