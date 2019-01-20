@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "bnrun": "cd palavramix && npm run build && cd .. && node server.js",
     "start": "node server.js"
   },
   "repository": {

@@ -8,7 +8,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // For Socket.io
-const http = require('http').Server(app);
+const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 
 const CollegiateDictionary = require("mw-dict").CollegiateDictionary;
@@ -32,6 +32,7 @@ let allWords = [];
 allWords = rword.rword.generate(8);
 allWords.push('The');
 allWords.push('A/An');
+console.log(allWords);
 
 let postID = 0;
 
@@ -214,5 +215,4 @@ require('./routes/routes.js')(app);
 // Listen for the server to start
 app.listen(port, function () {
     console.log("App is running on PORT: " + port);
-    dict.lookup('').then(result => {console.log(result)})
 });

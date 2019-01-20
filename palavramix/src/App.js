@@ -61,7 +61,7 @@ class App extends Component {
 
     componentDidMount() {
         // create connection
-        const socket = io.connect('http://localhost:3000');
+        const socket = io.connect('http://localhost');
         this.setState({socket: socket});
 
         socket.on('current-color', function(currColor) {
