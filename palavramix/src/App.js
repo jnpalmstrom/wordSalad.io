@@ -35,12 +35,16 @@ class App extends Component {
      * Updates state by adding a word
      */
     onWordClick(word) {
-        this.setState((oldState, props) => (
-            {
-                userInputPhrase: [...oldState.userInputPhrase, word],
-                userInputPhraseString: [...oldState.userInputPhrase, word].join(" ")
-            }
-        ))
+
+        if (this.state.userInputPhrase.length < 12)
+        {
+            this.setState((oldState, props) => (
+                {
+                    userInputPhrase: [...oldState.userInputPhrase, word],
+                    userInputPhraseString: [...oldState.userInputPhrase, word].join(" ")
+                }
+            ))
+        }
     }
 
 
