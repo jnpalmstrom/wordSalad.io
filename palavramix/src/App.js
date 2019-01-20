@@ -123,13 +123,7 @@ class App extends Component {
             <div className="App">
 
                 <div className="header-logo">
-                    <h1>palavramix</h1>
-                </div>
-
-                <div className="timer">
-                    <p>Words will change in...</p>
-                    <h2>{this.state.timeLeft}</h2>
-                    <p>{this.state.errorMsg}</p>
+                    <h1>{this.state.timeLeft} seconds till palavramix</h1>
                 </div>
 
                 <CollectionOfPhrases phrases={this.state.phrases}/>
