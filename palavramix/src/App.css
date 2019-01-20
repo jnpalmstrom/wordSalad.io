@@ -27,9 +27,6 @@ html {
   100%{background-position:0% 50%}
 }
 
-
-
-
 .timer {
   position: fixed;
   -webkit-border-radius: 15px;
@@ -146,6 +143,7 @@ html {
   flex-direction: row;
   justify-content: center;
   border-top: 3px white solid;
+  background-color: rgb(255, 255, 255, 85%);
   padding-top: 1em;
 }
 
