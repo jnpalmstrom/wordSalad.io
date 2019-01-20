@@ -23,7 +23,9 @@ class App extends Component {
             userInputPhrase: [],  // collection of strings
             userInputPhraseString: '', // string made up of above collection
             color: 0,   // color passed in by server
-            socket: ''
+            socket: '',
+            timeLeft: -1,
+            errorMsg: ''
         };
 
         this.onWordClick = this.onWordClick.bind(this);
@@ -60,21 +62,22 @@ class App extends Component {
         ))
     }
 
+    // todo: add an error text
     onSubmit(input) {
         const options = { year: 'numeric', month: 'numeric', day: 'numeric'};
         const dateString = input.timestamp.toLocaleString('en-US', options);
 
-        console.log(input.color);
-
-        this.state.socket.emit('post', {
-            phrase: input.phrase,
-            timestamp: dateString,
-            color: input.color
-        });
-        this.setState({
-            userInputPhrase: [],
-            userInputPhraseString: ''
-        });
+        if (input.phrase.length > 3)
+        {
+            this.state.socket.emit('post', {
+                phrase: input.phrase,
+                timestamp: dateString,
+                color: input.color
+            });
+                this.setState({
+                userInputPhrase: [],
+                userInputPhraseString: ''
+            });}
     }
 
     componentDidMount() {
@@ -98,6 +101,10 @@ class App extends Component {
             this.setState({phrases: []});
         });
 
+        socket.on('timer-update', (time) => (
+           this.setState({timeLeft: time})
+        ));
+
         // todo: deal with 'warning' event --> maybe not
     }
 
@@ -117,6 +124,12 @@ class App extends Component {
 
                 <div className="header-logo">
                     <h1>palavramix</h1>
+                </div>
+
+                <div className="timer">
+                    <p>Words will change in...</p>
+                    <h2>{this.state.timeLeft}</h2>
+                    <p>{this.state.errorMsg}</p>
                 </div>
 
                 <CollectionOfPhrases phrases={this.state.phrases}/>
