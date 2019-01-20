@@ -11,6 +11,7 @@ const port = process.env.PORT || 3000;
 let adjList = [];
 let nounList = [];
 let verbList = [];
+let timeLeft = 90;
 
 //const starterWords = ['furniture', 'greeting', 'drink', 'fuck', 'drugs', 'whores', 'food', 'school', 'tools', 'mood'];
 request('https://api.datamuse.com/words?md=p&sp=a*', { json: true }, (err, res, body) => {
@@ -990,6 +991,7 @@ function clearAllPosts() {
 function clearPosts() {
     // Set warning timeOut Interval
     setTimeout(warnUsers, 90000);
+    timeLeft = 90;
 
     // Clear all words
     allWords = [];
@@ -1006,8 +1008,14 @@ function clearPosts() {
     io.emit('current-color', currColor);
 }
 
+function broadcastTime() {
+    io.emit('timer-update', timeLeft);
+    timeLeft--;
+}
+
 // Clear all posts after 2 minutes
 setInterval(clearPosts, 90000);
+setInterval(broadcastTime, 1000);
 setInterval(clearAllPosts, 259200000);
 
 function shuffle(a) {
