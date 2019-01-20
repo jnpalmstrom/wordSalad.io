@@ -64,6 +64,8 @@ class App extends Component {
         const options = { year: 'numeric', month: 'numeric', day: 'numeric'};
         const dateString = input.timestamp.toLocaleString('en-US', options);
 
+        console.log(input.color);
+
         this.state.socket.emit('post', {
             phrase: input.phrase,
             timestamp: dateString,
@@ -108,6 +110,8 @@ class App extends Component {
      *    todo: don't forget to put limitations on the number of words (or repeat) possible in the phrasebox
      */
     render() {
+        let colorValue = convertIntToHSL(this.state.color, this.state.userInputPhraseString.length);
+
         return (
             <div className="App">
 
@@ -123,14 +127,14 @@ class App extends Component {
                             <PhraseBox
                                 phrase={this.state.userInputPhraseString}
                                 timestamp={new Date()}
-                                color={convertIntToHSL(this.state.color, this.state.userInputPhraseString.length)}
+                                color={colorValue}
                             />
                         </div>
 
                         <button className="submit-button" onClick={(e) => (this.onSubmit({
                             phrase: this.state.userInputPhraseString,
                             timestamp: new Date(),
-                            color: convertIntToHSL(this.state.color, this.state.userInputPhraseString.length)
+                            color: colorValue
                         })) }>
                             submit!
                         </button>
@@ -167,7 +171,7 @@ const CollectionOfPhrases = (props) => {
                     id={item.id}
                     phrase={item.phrase}
                     timestamp={item.timestamp}
-                    color={convertIntToHSL(props.color, item.phrase.length)}
+                    color={item.color}
                 />
                 ))}
         </div>

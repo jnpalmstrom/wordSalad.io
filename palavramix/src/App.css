@@ -54,7 +54,6 @@ button:hover {
 
 /* WORD BOX STYLE */
 .word {
-  min-width: 4em;
   font-size: 12px;
   text-align: center;
   background-color: darkgray;
