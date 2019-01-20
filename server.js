@@ -945,7 +945,6 @@ io.on('connection', function (socket) {
 function generateWords() {
     let newWords = [];
 
-    // 3 Nouns, 2 Verbs, 3 Adj
     if (nounList.length > 1) { var rand1 = nounList[Math.floor(Math.random() * nounList.length)].word;}
     if (verbList.length > 1) { var rand2 = verbList[Math.floor(Math.random() * verbList.length)].word;}
     if (adjList.length > 1) { var rand3 = adjList[Math.floor(Math.random() * adjList.length)].word;}
@@ -991,9 +990,6 @@ function clearAllPosts() {
 function clearPosts() {
     // Set warning timeOut Interval
     setTimeout(warnUsers, 90000);
-/*
-
-*/
 
     // Clear all words
     allWords = [];
@@ -1005,7 +1001,6 @@ function clearPosts() {
 
     // Generate a new color for the current time period
     currColor = Math.floor(Math.random() * 359);
-
 
     io.emit('all-words', allWords);
     io.emit('current-color', currColor);
