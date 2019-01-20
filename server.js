@@ -82,7 +82,7 @@ io.on('connection', function (socket) {
     socket.on('post', function (data) {
 
         let newPost = {
-            id: socket,
+            postID: Math.random(),
             phrase: data.phrase,
             numLikes: 0,
             numDislikes: 0,
@@ -90,6 +90,9 @@ io.on('connection', function (socket) {
         };
         allPosts.push(newPost);
 
+        io.emit('a-post', newPost);
+
+        /*
         // Goes thru all current connected sockets
         keyList.forEach((aKey) => {
             const currSocket = keyList[aKey];
@@ -103,6 +106,7 @@ io.on('connection', function (socket) {
                 });
             });
         });
+        */
     });
 
     // Handle disconnection
@@ -146,7 +150,7 @@ function warnUsers() {
 function clearPosts() {
     // Set warning timeOut Interval
     setTimeout(warnUsers, 90000);
-
+/*
     // Update the archivePost DB with highest rated post
     let hackathonDB = mysql.createConnection({
         host: 'postDB.cmrpubhiwsmb.us-east-1.rds.amazonaws.com',
@@ -174,7 +178,7 @@ function clearPosts() {
         if (err) { return console.error(err.message); }
     });
     hackathonDB.end();
-
+*/
     // Clear all posts
     allPosts = [];
 
@@ -188,12 +192,8 @@ function clearPosts() {
     // Generate a new color for the current time period
     currColor = Math.floor(Math.random() * 359);
 
-    // Loop thru all connected sockets and notify that Posts have been cleared & send them the new color
-    keyList.forEach((aKey) => {
-        const currSocket = keyList[aKey];
-        currSocket.emit('all-posts-cleared');
-        currSocket.emit('current-color', currColor);
-    });
+    io.emit('all-posts-cleared');
+    io.emit('current-color', currColor);
 }
 
 // Clear all posts after 2 minutes
