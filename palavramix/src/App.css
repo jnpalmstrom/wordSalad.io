@@ -3,8 +3,6 @@ button:hover {
   cursor: pointer;
 }
 
-
-
 /* PHRASE BOX STYLE */
 .phrase-box {
   display: flex;
@@ -25,7 +23,7 @@ button:hover {
   position: relative;
   bottom: 0.2em;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   height: 40%;
 }
 
@@ -56,7 +54,8 @@ button:hover {
 
 /* WORD BOX STYLE */
 .word {
-  min-width: 6em;
+  min-width: 4em;
+  font-size: 12px;
   text-align: center;
   background-color: darkgray;
   margin: 1.5em 0.5em 0.8em;
@@ -75,7 +74,15 @@ button:hover {
   color: white;
 }
 
+.header-logo {
+  display: flex;
+  justify-content: center;
+}
 
+.header-logo h1 {
+  font-family: sans-serif;
+  color: darkgrey;
+}
 
 /* COLLECTION OF PHRASES STYLE */
 .collection-of-phrases {
@@ -94,7 +101,6 @@ button:hover {
   margin-left: auto;
   margin-right: auto;
   width: 90%;
-  border: 3px solid aqua;
   background-color: white;
   padding: auto;
   display: flex;
