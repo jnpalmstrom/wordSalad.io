@@ -55,8 +55,18 @@ class App extends Component {
         ))
     }
 
-    onSubmit(phrase) {
-        this.state.socket.emit('post', { ...phrase })
+    onSubmit(input) {
+        const options = { year: 'numeric', month: 'numeric', day: 'numeric'};
+        const dateString = input.timestamp.toLocaleString('en-US', options);
+
+        this.state.socket.emit('post', {
+            phrase: input.phrase,
+            timestamp: dateString
+        });
+        this.setState({
+            userInputPhrase: [],
+            userInputPhraseString: ''
+        });
     }
 
     componentDidMount() {
